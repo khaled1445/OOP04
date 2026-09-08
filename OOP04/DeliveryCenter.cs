@@ -2,61 +2,47 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System;
 
-namespace OOP04
+namespace OOP_04
 {
-    internal class DeliveryCenter
+    public class DeliveryCenter
     {
-        private const int capacity = 20;
-        private Shipment[] shipments = new Shipment[capacity];
+        private const int Capacity = 20;
+        private Shipment[] shipments = new Shipment[Capacity];
 
-        public Driver AssignedDriver { get; set; }
         public string CenterName { get; set; }
-        public int Count { get; set; }
+        public Driver AssignedDriver { get; set; }
+
         public Shipment this[int index]
         {
             get
             {
-                if (shipments == null || index < 0 || index >= shipments.Length)
-                {
-                    return default;
-
-                }
+                if (index < 0 || index >= shipments.Length)
+                    return null;
                 return shipments[index];
-
             }
-
             set
             {
-                if (shipments == null)
-                {
-                    shipments = new Shipment[capacity];
-                }
-
-                if (index < 0 || index > shipments.Length)
-                {
+                if (index < 0 || index >= shipments.Length)
                     return;
-                }
                 shipments[index] = value;
-
             }
-
         }
 
         public Shipment this[string trackingCode]
         {
             get
             {
-                if (shipments != null)
+                foreach (var shipment in shipments)
                 {
-                    foreach (Shipment shipment in shipments)
+                    if (shipment != null &&
+                        shipment.TrackingCode.Equals(trackingCode, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (shipment.TrackingCode == trackingCode)
-                            return shipment;
+                        return shipment;
                     }
-                    return default;
                 }
-                return default;
+                return null;
             }
         }
 
@@ -89,10 +75,13 @@ namespace OOP04
 
         public void PrintAllShipments()
         {
-            Console.WriteLine($"Driver : {AssignedDriver?.Name}");
-            Console.WriteLine();
-            Console.WriteLine(new string('-', 42));
-            Console.WriteLine();
+            if (AssignedDriver != null)
+            {
+                Console.WriteLine($"Driver : {AssignedDriver.Name}");
+                Console.WriteLine();
+                Console.WriteLine(new string('-', 42));
+                Console.WriteLine();
+            }
 
             foreach (var shipment in shipments)
             {
@@ -103,8 +92,19 @@ namespace OOP04
                 Console.WriteLine();
                 shipment.PrintShipment();
                 Console.WriteLine();
-                Console.WriteLine(new string('-', 50));
+                Console.WriteLine(new string('-', 42));
                 Console.WriteLine();
+            }
+        }
+
+        public void PrintTrackingStatuses()
+        {
+            foreach (var shipment in shipments)
+            {
+                if (shipment is ITrackable trackable)
+                {
+                    Console.WriteLine(trackable.GetTrackingStatus());
+                }
             }
         }
     }

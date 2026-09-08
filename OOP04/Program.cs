@@ -1,4 +1,5 @@
 ﻿
+using OOP_04;
 using OOP04;
 
 namespace OOP04
@@ -10,57 +11,49 @@ namespace OOP04
             //OOP 03 - Smart Delivery Management System 
             #region Part 01 : Theoretical Questions
 
-            #region Q1  Overloading, Overriding, and Binding
-            //a)  What is the difference between Method Overloading and Method Overriding?
-            //overloading is a compile-time polymorphism where multiple methods have the same name but different parameters (type, number, or order).
-            //Overriding is a run-time polymorphism where a derived class provides a specific implementation of a method that is already defined in its base class.
+            #region Q1  Abstraction
+            //a)  What is Abstraction in Object - Oriented Programming?
+            //it's a way to hide the implementation details of a class and only expose the essential features to the user.
+            //It allows the user to interact with an object without needing to understand its internal workings.
 
-            //b)  What is the difference between Static Binding and Dynamic Binding?
-            //Static binding  occurs at compile time, where the method to be called is determined based on the reference type.
-
-            //Dynamic binding  occurs at runtime, where the method to be called is determined based on the actual object type.
-
-            #endregion
-
-            #region //Q2 Sealed Classes and Methods
-            //a)  What is the purpose of the sealed keyword when applied to a class?
-            //The sealed keyword is used to prevent a class from being inherited. When a class is marked as sealed, it cannot serve as a base class for any other class
-            //b)  What is the difference between a sealed class and a sealed method?
-            //A sealed class is a class that cannot be inherited, while a sealed method is a method that cannot be overridden in derived classes. A sealed class prevents any further inheritance, while a sealed method allows inheritance of the class but restricts overriding of that specific method.
-            //c)  Can a sealed method be overridden? Why?
-            //No, a sealed method cannot be overridden. When a method is marked as sealed, it indicates that the method has been finalized and cannot be further overridden in derived classes         
-           
-            #endregion
-
+            //b)  Why is abstraction considered one of the four pillars of OOP?
+            // because it allows for the creation of abstract classes and interfaces,
+            // which can be used to define common behavior for a group of related classes, This promotes code reusability and maintainability
 
             #endregion
 
+            #region Q2  Abstract Classes vs.Interfaces
+            //a)  What is the difference between an Abstract Class and an Interface?
+            // abstract class can have both abstract and concrete methods, while an interface can only have abstract methods.
+
+            //b)  When would you choose an Interface instead of an Abstract Class?
+            // when you want to define a contract that multiple classes can implement, without seeing their inheritance hierarchy.
+
+            //c)  Can a class inherit from multiple abstract classes? Can it implement multiple interfaces?
+            // No, a class can only inherit from one abstract class, but it can implement multiple interfaces.
+            
+            #endregion
 
 
-            #region part02 ass03
+            #endregion
+
+
+
+            #region part02 ass04
             try
             {
-                //  Create a Driver
-
-                Console.Write("Enter Driver Name: ");
-                Driver driver = new Driver(Console.ReadLine());
-
-                //  Create a DeliveryCenter
                 DeliveryCenter center = new DeliveryCenter();
 
                 Console.Write("Enter Delivery Center Name: ");
                 center.CenterName = Console.ReadLine();
-
-                //  Assign the Driver to the DeliveryCenter
-                center.AssignedDriver = driver;
                 Console.WriteLine();
 
-                //  Create one StandardShipment
+                // Create one StandardShipment
                 Console.WriteLine("--- Standard Shipment Data ---");
                 StandardShipment standard = ReadStandardShipment();
                 Console.WriteLine();
 
-                //  Create one ExpressShipment
+                // Create one ExpressShipment
                 Console.WriteLine("--- Express Shipment Data ---");
                 ExpressShipment express = ReadExpressShipment();
                 Console.WriteLine();
@@ -70,73 +63,64 @@ namespace OOP04
                 InternationalShipment international = ReadInternationalShipment();
                 Console.WriteLine();
 
-                //  Add all shipments to the DeliveryCenter
+                // Add all shipments to the DeliveryCenter
                 center.AddShipment(standard);
                 center.AddShipment(express);
                 center.AddShipment(international);
 
-                //  Print all shipments using PrintAllShipments()
+                // Print all shipment details
                 Console.WriteLine("=".PadRight(42, '='));
                 Console.WriteLine("Delivery Center");
                 Console.WriteLine("=".PadRight(42, '='));
                 Console.WriteLine();
                 center.PrintAllShipments();
 
-                //  Call DeliveryHelper.PrintShipmentDetails() for each shipment
+                //  Print the tracking status of every shipment
                 Console.WriteLine("=".PadRight(42, '='));
-                Console.WriteLine("Printing Using DeliveryHelper...");
-                Console.WriteLine("=".PadRight(42, '='));
-                Console.WriteLine();
-                DeliveryHelper.PrintShipmentDetails(standard);
-                DeliveryHelper.PrintShipmentDetails(express);
-                DeliveryHelper.PrintShipmentDetails(international);
-
-                //  Demonstrate both versions of UpdateWeight()
-                Console.WriteLine("=".PadRight(42, '='));
-                Console.WriteLine("Updating Weight...");
+                Console.WriteLine("Tracking Status");
                 Console.WriteLine("=".PadRight(42, '='));
                 Console.WriteLine();
-                Console.WriteLine($"Original Weight : {standard.Weight} KG");
-
-                standard.UpdateWeight(5);                
-                Console.WriteLine($"Updated Weight : {standard.Weight} KG");
-
-                standard.UpdateWeight(5, 0.5m);            
-                Console.WriteLine($"Updated Weight After Packing : {standard.Weight} KG");
+                center.PrintTrackingStatuses();
                 Console.WriteLine();
 
-                //  Build a Shipment[] holding mixed types and print all in a loop
+                // Print the insurance cost of every shipment
                 Console.WriteLine("=".PadRight(42, '='));
-                Console.WriteLine("Printing Using Shipment[]...");
+                Console.WriteLine("Insurance");
                 Console.WriteLine("=".PadRight(42, '='));
                 Console.WriteLine();
+                Console.Write($"{standard.ShipmentTypeName} Insurance : ");
+                DeliveryReport.PrintInsurance(standard);
+                Console.Write($"{express.ShipmentTypeName} Insurance : ");
+                DeliveryReport.PrintInsurance(express);
+                Console.Write($"{international.ShipmentTypeName} Insurance : ");
+                DeliveryReport.PrintInsurance(international);
+                Console.WriteLine();
 
-                Shipment[] mixedShipments = { standard, express, international };
-                foreach (Shipment s in mixedShipments)
+                // Store the shipment objects in an ITrackable[] array and print statuses
+                Console.WriteLine("=".PadRight(42, '='));
+                Console.WriteLine("ITrackable[] Demo");
+                Console.WriteLine("=".PadRight(42, '='));
+                Console.WriteLine();
+                ITrackable[] trackables = { standard, express, international };
+                foreach (ITrackable t in trackables)
                 {
-                    Console.WriteLine($"{s.ShipmentTypeName}...");
-                    s.PrintShipment();
-                    Console.WriteLine();
+                    Console.WriteLine(t.GetTrackingStatus()); // dynamic binding through the interface
                 }
-
-                //  Demonstrate the sealed class and sealed method
-                Console.WriteLine("=".PadRight(42, '='));
-                Console.WriteLine("Sealed Class & Sealed Method Demo");
-                Console.WriteLine("=".PadRight(42, '='));
                 Console.WriteLine();
 
-              
-                CompletedShipment completed = new CompletedShipment(
-                    "SH999", "Finished Order", 4, 70, new DeliveryAddress("Giza", "Al Haram", 12));
-                Console.WriteLine("Completed Shipment created successfully (sealed class):");
-                completed.PrintShipment();
+                //  Store the shipment objects in an IInsurable[] array and print insurance values
+                Console.WriteLine("=".PadRight(42, '='));
+                Console.WriteLine("IInsurable[] Demo");
+                Console.WriteLine("=".PadRight(42, '='));
+                Console.WriteLine();
+                IInsurable[] insurables = { standard, express, international };
+                foreach (IInsurable i in insurables)
+                {
+                    Console.WriteLine($"Insurance : {i.CalculateInsurance():0.00} EGP");
+                }
                 Console.WriteLine();
 
-             
-                PriorityInternationalShipment priority = new PriorityInternationalShipment(
-                    "SH777", "Urgent Documents", 1, 90, new DeliveryAddress("Cairo", "Zamalek", 3),
-                    "France", 50);
-                priority.GenerateCustomsReport();
+                Console.WriteLine("Interface Polymorphism Demonstrated Successfully.");
             }
             catch (Exception ex)
             {
@@ -150,7 +134,6 @@ namespace OOP04
             Console.ReadKey();
         }
 
-       
         static DeliveryAddress ReadAddress()
         {
             Console.Write("City: ");
@@ -231,7 +214,7 @@ namespace OOP04
             return new InternationalShipment(trackingCode, description, weight, deliveryFee, address,
                                               destinationCountry, customsFee);
         }
-    }
             #endregion
+    }
 }
     

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OOP04
 {
-    internal class Driver
+    public class Driver
     {
         public string Name { get; set; }
 

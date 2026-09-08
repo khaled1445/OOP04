@@ -1,15 +1,23 @@
-﻿using System;
+﻿using OOP04;
+using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace OOP04
 {
-    internal class StandardShipment: Shipment
+    public class StandardShipment : Shipment, ITrackable, IInsurable
     {
-        public StandardShipment(string trackingCode, string description, decimal weight, decimal deliveryFee, DeliveryAddress destination) : base(trackingCode, description, weight, deliveryFee, destination)
-        {
+        public override string ShipmentTypeName => "Standard Shipment";
 
+        public StandardShipment(string trackingCode, string description, decimal weight,
+                                 decimal deliveryFee, DeliveryAddress destination)
+            : base(trackingCode, description, weight, deliveryFee, destination)
+        {
         }
+
+        public override decimal EstimatedCost => DeliveryFee + (Weight * 5);
+
         public override void PrintShipment()
         {
             Console.WriteLine($"Tracking Code : {TrackingCode}");
@@ -18,5 +26,9 @@ namespace OOP04
             Console.WriteLine($"Delivery Fee  : {DeliveryFee} EGP");
             Console.WriteLine($"Estimated Cost: {EstimatedCost} EGP");
         }
+
+        public string GetTrackingStatus() => $"Shipment {TrackingCode} is Ready.";
+
+        public decimal CalculateInsurance() => EstimatedCost * 0.05m;
     }
 }

@@ -6,14 +6,15 @@ using System.Text;
 
 namespace OOP04
 {
-    internal class Shipment
+    public abstract class Shipment
     {
         private string trackingCode;
         private string description;
         private decimal weight;
         private decimal deliveryFee;
-        public DeliveryAddress Destination { set; get; }
+        internal DeliveryAddress Destination { get; set; }
 
+            
         public string TrackingCode
         {
             get
@@ -82,13 +83,11 @@ namespace OOP04
             }
         }
 
-        // Provide a virtual shipment type name so derived classes can override it
         public virtual string ShipmentTypeName => "Standard Shipment";
 
-        // Standard estimated cost; derived classes can add extra fees
-        public virtual decimal EstimatedCost => DeliveryFee + (Weight * 5);
+        public abstract decimal EstimatedCost { get; }
 
-        public Shipment(string trackingCode)
+        protected Shipment(string trackingCode)
         {
             TrackingCode = string.IsNullOrWhiteSpace(trackingCode) ? "wrong" : trackingCode;
             Description = "Unknown";
@@ -97,7 +96,7 @@ namespace OOP04
             Destination = new DeliveryAddress("Unknown", "Unknown", 0);
         }
 
-        public Shipment(string trackingCode, string description, decimal weight, decimal deliveryFee, DeliveryAddress destination)
+        protected Shipment(string trackingCode, string description, decimal weight, decimal deliveryFee, DeliveryAddress destination)
         {
             TrackingCode = string.IsNullOrWhiteSpace(trackingCode) ? "UNKNOWN" : trackingCode;
             Description = string.IsNullOrWhiteSpace(description) ? "Unknown" : description;
@@ -117,17 +116,7 @@ namespace OOP04
 
         }
 
-        public virtual void PrintShipment()
-        {
-            Console.WriteLine($"Traching Code: {TrackingCode}");
-            Console.WriteLine($"Description: {Description}");
-            Console.WriteLine($"Weight: {Weight} KG");
-            Console.WriteLine($"DeliveryFee: {DeliveryFee} EGP");
-            Console.WriteLine($"Destination: {Destination.GetFullAddress()} ");
-            Console.WriteLine($"EstimateCost: {EstimatedCost} EGP");
-
-            PrintExtraDetails();
-        }
+        public abstract void PrintShipment();
 
         public void UpdateWeight(decimal newWeight)
         {

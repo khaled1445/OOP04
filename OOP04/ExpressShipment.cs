@@ -1,10 +1,11 @@
-﻿using System;
+﻿using OOP04;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace OOP04
 {
-    internal class ExpressShipment : Shipment
+    public class ExpressShipment : Shipment, ITrackable, IInsurable
     {
         private decimal extraFee;
 
@@ -20,18 +21,14 @@ namespace OOP04
 
         public override string ShipmentTypeName => "Express Shipment";
 
-        public override decimal EstimatedCost => base.EstimatedCost + ExtraFee;
-
-        public ExpressShipment(string trackingCode) : base(trackingCode)
-        {
-            ExtraFee = 0;
-        }
-
-        public ExpressShipment(string trackingCode, string description, decimal weight, decimal deliveryFee, DeliveryAddress destination, decimal extraFee)
+        public ExpressShipment(string trackingCode, string description, decimal weight,
+                                decimal deliveryFee, DeliveryAddress destination, decimal extraFee)
             : base(trackingCode, description, weight, deliveryFee, destination)
         {
             ExtraFee = extraFee >= 0 ? extraFee : 0;
         }
+
+        public override decimal EstimatedCost => DeliveryFee + (Weight * 5) + ExtraFee;
 
         public override void PrintShipment()
         {
@@ -42,5 +39,9 @@ namespace OOP04
             Console.WriteLine($"Extra Fee     : {ExtraFee} EGP");
             Console.WriteLine($"Estimated Cost: {EstimatedCost} EGP");
         }
+
+        public string GetTrackingStatus() => $"Shipment {TrackingCode} is Out for Delivery.";
+
+        public decimal CalculateInsurance() => EstimatedCost * 0.08m;
     }
 }

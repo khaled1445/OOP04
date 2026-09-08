@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OOP04
 {
-    public class InternationalShipment : Shipment, ITrackable, IInsurable
+    public class InternationalShipment : Shipment, IInsurable
     {
         private string destinationCountry;
         private decimal customsFee;
@@ -39,6 +39,8 @@ namespace OOP04
         {
             DestinationCountry = string.IsNullOrWhiteSpace(destinationCountry) ? "Unknown" : destinationCountry;
             CustomsFee = customsFee >= 0 ? customsFee : 0;
+
+            TrackingStatus = "Delivered";
         }
 
         public override decimal EstimatedCost => DeliveryFee + (Weight * 5) + CustomsFee;
@@ -53,8 +55,6 @@ namespace OOP04
             Console.WriteLine($"Customs Fee          : {CustomsFee} EGP");
             Console.WriteLine($"Estimated Cost       : {EstimatedCost} EGP");
         }
-
-        public string GetTrackingStatus() => $"Shipment {TrackingCode} has been Delivered.";
 
         public decimal CalculateInsurance() => EstimatedCost * 0.12m;
 

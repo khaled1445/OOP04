@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OOP04
 {
-    public class ExpressShipment : Shipment, ITrackable, IInsurable
+    public class ExpressShipment : Shipment, IInsurable
     {
         private decimal extraFee;
 
@@ -26,6 +26,9 @@ namespace OOP04
             : base(trackingCode, description, weight, deliveryFee, destination)
         {
             ExtraFee = extraFee >= 0 ? extraFee : 0;
+
+            
+            TrackingStatus = "Out For Delivery";
         }
 
         public override decimal EstimatedCost => DeliveryFee + (Weight * 5) + ExtraFee;
@@ -39,8 +42,6 @@ namespace OOP04
             Console.WriteLine($"Extra Fee     : {ExtraFee} EGP");
             Console.WriteLine($"Estimated Cost: {EstimatedCost} EGP");
         }
-
-        public string GetTrackingStatus() => $"Shipment {TrackingCode} is Out for Delivery.";
 
         public decimal CalculateInsurance() => EstimatedCost * 0.08m;
     }

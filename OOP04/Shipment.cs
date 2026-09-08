@@ -6,121 +6,108 @@ using System.Text;
 
 namespace OOP04
 {
-    public abstract class Shipment
+    public abstract partial class Shipment : ITrackable
     {
         private string trackingCode;
         private string description;
         private decimal weight;
         private decimal deliveryFee;
-        internal DeliveryAddress Destination { get; set; }
 
-            
         public string TrackingCode
         {
-            get
-            {
-                return trackingCode;
-            }
+            get { return trackingCode; }
             private set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    Console.WriteLine("TrackingCode cannot be empty or whitespace");
-                    return;
-                }
-                trackingCode = value;
-
+                if (!string.IsNullOrWhiteSpace(value))
+                    trackingCode = value;
             }
         }
 
         public string Description
         {
-            get
-            {
-                return description;
-            }
+            get { return description; }
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    Console.WriteLine("Description cannot be empty or whitespace");
-                    return;
-                }
-                description = value;
-
+                if (!string.IsNullOrWhiteSpace(value))
+                    description = value;
             }
         }
 
         public decimal Weight
         {
-            get
-            {
-                return weight;
-            }
-
+            get { return weight; }
             set
             {
                 if (value > 0)
-                {
                     weight = value;
-                }
-                else
-                    Console.WriteLine("Enter a Valid number");
             }
         }
+
         public decimal DeliveryFee
         {
-            get
-            {
-                return deliveryFee;
-            }
+            get { return deliveryFee; }
             private set
             {
                 if (value > 0)
                     deliveryFee = value;
-                else
-                    Console.WriteLine("Enter a Valid Number");
             }
         }
 
-        public virtual string ShipmentTypeName => "Standard Shipment";
+        public DeliveryAddress Destination { get; set; }
 
         public abstract decimal EstimatedCost { get; }
+        public abstract void PrintShipment();
+        public virtual string ShipmentTypeName => "Shipment";
+
+      
+        private static int totalShipmentsCreated;
+
+        
+        static Shipment()
+        {
+            totalShipmentsCreated = 0;
+            Console.WriteLine("Shipment System Initialized");
+        }
+
+        
+        public static int GetTotalShipmentsCreated()
+        {
+            return totalShipmentsCreated;
+        }
+
+       
 
         protected Shipment(string trackingCode)
         {
-            TrackingCode = string.IsNullOrWhiteSpace(trackingCode) ? "wrong" : trackingCode;
+            TrackingCode = string.IsNullOrWhiteSpace(trackingCode) ? "UNKNOWN" : trackingCode;
             Description = "Unknown";
             Weight = 1;
             DeliveryFee = 50;
             Destination = new DeliveryAddress("Unknown", "Unknown", 0);
+            TrackingStatus = "In Transit"; 
+            totalShipmentsCreated++;
         }
 
-        protected Shipment(string trackingCode, string description, decimal weight, decimal deliveryFee, DeliveryAddress destination)
+        protected Shipment(string trackingCode, string description, decimal weight,
+                            decimal deliveryFee, DeliveryAddress destination)
         {
             TrackingCode = string.IsNullOrWhiteSpace(trackingCode) ? "UNKNOWN" : trackingCode;
             Description = string.IsNullOrWhiteSpace(description) ? "Unknown" : description;
             Weight = weight > 0 ? weight : 1;
             DeliveryFee = deliveryFee > 0 ? deliveryFee : 50;
-            Destination = (destination);
+            Destination = destination;
+            TrackingStatus = "In Transit"; 
+            totalShipmentsCreated++;
         }
 
         public void UpdateDeliveryFee(decimal newFee)
         {
-            if (newFee > 0)
-                DeliveryFee = newFee;
+            DeliveryFee = newFee;
         }
-
-        protected virtual void PrintExtraDetails()
-        {
-
-        }
-
-        public abstract void PrintShipment();
 
         public void UpdateWeight(decimal newWeight)
         {
-            Weight = newWeight; 
+            Weight = newWeight;
         }
 
         public void UpdateWeight(decimal newWeight, decimal extraPackingWeight)
@@ -128,5 +115,26 @@ namespace OOP04
             Weight = newWeight + extraPackingWeight;
         }
 
+        
+        partial void OnTrackingStatusChanged(string newStatus);
+
+        
+        public Shipment CopyShipment()
+        {
+            return (Shipment)this.MemberwiseClone();
+        }
+
+        public Shipment ShallowCopy()
+        {
+            return (Shipment)this.MemberwiseClone();
+        }
+
+        public Shipment DeepCopy()
+        {
+            Shipment copy = (Shipment)this.MemberwiseClone();
+            copy.Destination = new DeliveryAddress(
+                Destination.City, Destination.Street, Destination.BuildingNumber);
+            return copy;
+        }
     }
 }

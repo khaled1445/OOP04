@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OOP04
 {
-    public class StandardShipment : Shipment, ITrackable, IInsurable
+    public class StandardShipment : Shipment, IInsurable
     {
         public override string ShipmentTypeName => "Standard Shipment";
 
@@ -26,8 +26,6 @@ namespace OOP04
             Console.WriteLine($"Delivery Fee  : {DeliveryFee} EGP");
             Console.WriteLine($"Estimated Cost: {EstimatedCost} EGP");
         }
-
-        public string GetTrackingStatus() => $"Shipment {TrackingCode} is Ready.";
 
         public decimal CalculateInsurance() => EstimatedCost * 0.05m;
     }
